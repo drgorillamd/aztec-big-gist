@@ -80,7 +80,7 @@ export class MyNoteTestContract extends ContractBase {
   /** Type-safe wrappers for the public methods exposed by the contract. */
   public methods!: {
     
-    /** test() */
-    test: (() => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
+    /** test_uses_my_note() */
+    test_uses_my_note: (() => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
   };
 }

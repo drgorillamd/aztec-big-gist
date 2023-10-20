@@ -1,5 +1,9 @@
 mod types;
  
+
+ /**
+ @note Doesn't do much: create the contract and init an immutable singleton, then retrieve it in another function
+ */
 contract MyNoteTest {
     use crate::types::my_note:: {MyNote, MyNoteMethods, MY_NOTE_LEN};
 
@@ -44,7 +48,7 @@ contract MyNoteTest {
     }
 
     #[aztec(private)]
-    fn test() {
+    fn test_uses_my_note() {
         let current_note = storage.my_singleton.get_note();
     }
 }
