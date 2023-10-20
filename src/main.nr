@@ -40,9 +40,13 @@ contract MyNoteTest {
             }
         }
     }
+
+    #[aztec(private)]
+    fn constructor() {
+    }
  
     #[aztec(private)]
-    fn constructor(_new_value: AztecAddress) {
+    fn set_value(_new_value: AztecAddress) {
        let mut my_new_note = MyNote::new(_new_value);
         storage.my_singleton.initialize(&mut my_new_note, Option::none());
     }
@@ -50,5 +54,11 @@ contract MyNoteTest {
     #[aztec(private)]
     fn test_uses_my_note() {
         let current_note = storage.my_singleton.get_note();
+    }
+
+    unconstrained fn compute_note_hash_and_nullifier(contract_address: Field, nonce: Field, storage_slot: Field, preimage: [Field; MY_NOTE_LEN]) -> [Field; 4] {
+        let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
+
+        note_utils::compute_note_hash_and_nullifier(MyNoteMethods, note_header, preimage)
     }
 }
