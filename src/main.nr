@@ -42,11 +42,7 @@ contract MyNoteTest {
     }
 
     #[aztec(private)]
-    fn constructor() {
-    }
- 
-    #[aztec(private)]
-    fn set_value(_new_value: AztecAddress) {
+    fn constructor(_new_value: AztecAddress) {
        let mut my_new_note = MyNote::new(_new_value);
         storage.my_singleton.initialize(&mut my_new_note, Option::none());
     }

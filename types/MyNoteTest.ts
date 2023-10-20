@@ -56,14 +56,14 @@ export class MyNoteTestContract extends ContractBase {
   /**
    * Creates a tx to deploy a new instance of this contract.
    */
-  public static deploy(pxe: PXE, ) {
+  public static deploy(pxe: PXE, _new_value: AztecAddressLike) {
     return new DeployMethod<MyNoteTestContract>(Point.ZERO, pxe, MyNoteTestContractArtifact, Array.from(arguments).slice(1));
   }
 
   /**
    * Creates a tx to deploy a new instance of this contract using the specified public key to derive the address.
    */
-  public static deployWithPublicKey(pxe: PXE, publicKey: PublicKey, ) {
+  public static deployWithPublicKey(pxe: PXE, publicKey: PublicKey, _new_value: AztecAddressLike) {
     return new DeployMethod<MyNoteTestContract>(publicKey, pxe, MyNoteTestContractArtifact, Array.from(arguments).slice(2));
   }
   
@@ -82,9 +82,6 @@ export class MyNoteTestContract extends ContractBase {
     
     /** compute_note_hash_and_nullifier(contract_address: field, nonce: field, storage_slot: field, preimage: array) */
     compute_note_hash_and_nullifier: ((contract_address: FieldLike, nonce: FieldLike, storage_slot: FieldLike, preimage: FieldLike[]) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
-
-    /** set_value(_new_value: struct) */
-    set_value: ((_new_value: AztecAddressLike) => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;
 
     /** test_uses_my_note() */
     test_uses_my_note: (() => ContractFunctionInteraction) & Pick<ContractMethod, 'selector'>;

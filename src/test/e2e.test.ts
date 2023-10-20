@@ -36,30 +36,22 @@ describe("E2E test immutable singleton", () => {
 
     // Store the address two as mock data
     it("Deploys the contract", async () => {
-      testContract = await MyNoteTestContract.deploy(pxe).send().deployed();
-    });
+      let receipt = MyNoteTestContract.deploy(
+        pxe,
+        AztecAddress.fromBigInt(69n)
+      ).send();
 
-    it("set value", async () => {
-      receipt = await testContract
-        .withWallet(addressOne)
-        .methods.set_value(AztecAddress.fromBigInt(69n))
-        .send()
-        .wait();
+      testContract = await receipt.deployed();
 
-      expect(receipt.status).toBe("mined");
-    });
-
-    it("add note to pxe", async () => {
       await pxe.addNote(
         addressOne.getAddress(),
         testContract.address,
         new Fr(1),
         new NotePreimage([new Fr(69)]),
-        receipt.txHash
+        await receipt.getTxHash()
       );
     });
 
-    // This call will fails
     it("Test", async () => {
       const receipt2 = await testContract
         .withWallet(addressTwo)
