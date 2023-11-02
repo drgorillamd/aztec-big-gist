@@ -36,6 +36,7 @@ describe("E2E test immutable singleton", () => {
 
     // Store the address two as mock data
     it("Deploys the contract", async () => {
+      // Deploy and init singletong to address(69)
       let receipt = MyNoteTestContract.deploy(
         pxe,
         AztecAddress.fromBigInt(69n)
@@ -43,6 +44,7 @@ describe("E2E test immutable singleton", () => {
 
       testContract = await receipt.deployed();
 
+      // Add note to pxe
       await pxe.addNote(
         addressOne.getAddress(),
         testContract.address,
@@ -52,6 +54,7 @@ describe("E2E test immutable singleton", () => {
       );
     });
 
+    // Do whatever which uses this singleton
     it("Test", async () => {
       const receipt2 = await testContract
         .withWallet(addressTwo)
