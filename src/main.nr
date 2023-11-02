@@ -11,14 +11,9 @@ contract Test {
         state_vars::set::Set,
         types::address::{AztecAddress},
     };
-    use dep::authwit::{
-        auth::{
-            assert_current_call_valid_authwit, 
-            assert_current_call_valid_authwit_public, 
-        },
-    };
+    use dep::authwit::auth::assert_current_call_valid_authwit;
     use crate::my_note::{MyNote, MyNoteMethods, MY_NOTE_LEN};
-
+    
     struct Storage {
         my_set: Set<MyNote, MY_NOTE_LEN>,
     }
@@ -39,7 +34,7 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
 */
 
     #[aztec(private)]
-    fn remove_note(from: AztecAddress, nonce: Field) -> Field {
+    fn remove_note(from: AztecAddress) -> Field {
 
         if (from.address != context.msg_sender()) { // commenting out this if fix compilation, same as...
             assert_current_call_valid_authwit(&mut context, from);
@@ -54,24 +49,4 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
 
         1
     }
-
-    unconstrained fn compute_note_hash_and_nullifier(contract_address: Field, nonce: Field, storage_slot: Field, preimage: [Field; MY_NOTE_LEN]) -> [Field; 4] {
-        let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
-        note_utils::compute_note_hash_and_nullifier(MyNoteMethods, note_header, preimage)
-    }
-
-
-    #[aztec(private)]
-    fn create_note(
-        from: AztecAddress,
-        amount: Field,
-        participants: [Field; 4],
-        nonce: Field,
-    ) -> Field {
-        let mut escrow_note = MyNote::new(amount, from, participants);
-        storage.my_set.insert(&mut escrow_note, true);
-
-        1
-    }
-
 }

@@ -18,26 +18,26 @@ use dep::aztec::{
 global MY_NOTE_LEN: Field = 1;
 
 struct MyNote {
-    agent: AztecAddress,
+    my_address: AztecAddress,
     header: NoteHeader,
 }
 
 impl MyNote {
-    pub fn new(value: Field, agent: AztecAddress, participants: [Field; 4]) -> Self {
+    pub fn new(value: Field, my_address: AztecAddress, participants: [Field; 4]) -> Self {
         let header = NoteHeader::empty();
         MyNote {
-            agent,
+            my_address,
             header,
         }
     }
 
     pub fn serialize(self) -> [Field; MY_NOTE_LEN] {
-        [self.agent.address]
+        [self.my_address.address]
     }
 
     pub fn deserialize(preimage: [Field; MY_NOTE_LEN]) -> Self {
         MyNote {
-            agent: AztecAddress::new(preimage[0]),
+            my_address: AztecAddress::new(preimage[0]),
             header: NoteHeader::empty(),
         }
     }
