@@ -5,13 +5,6 @@ use dep::aztec::{
         utils::compute_note_hash_for_read_or_nullify,
         note_getter_options::NoteGetterOptions,
     },
-    oracle::{
-        rand::rand,
-        get_secret_key::get_secret_key,
-        get_public_key::get_public_key,
-    },
-    log::emit_encrypted_log,
-    hash::pedersen_hash,
     context::PrivateContext,
     types::{
         type_serialization::{
@@ -39,9 +32,7 @@ impl MyNote {
     }
 
     pub fn serialize(self) -> [Field; MY_NOTE_LEN] {
-        [
-            self.agent.address 
-        ]
+        [self.agent.address]
     }
 
     pub fn deserialize(preimage: [Field; MY_NOTE_LEN]) -> Self {
@@ -52,23 +43,12 @@ impl MyNote {
     }
 
     pub fn compute_note_hash(self) -> Field {
-        // TODO(#1205) Should use a non-zero generator index.
         dep::std::hash::pedersen(serialize(self))[0]
     }
 
-    // docs:start:nullifier
-
     fn compute_nullifier(self) -> Field {
-        let note_hash_for_nullify = compute_note_hash_for_read_or_nullify(MyNoteMethods, self);
-        let nullifier_key = 123;
-
-        dep::std::hash::pedersen([
-            note_hash_for_nullify,
-            nullifier_key,
-        ])[0]
+        0
     }
-
-    // docs:end:nullifier
 
     pub fn set_header(&mut self, header: NoteHeader) {
         self.header = header;
