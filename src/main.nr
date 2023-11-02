@@ -13,7 +13,7 @@ contract Test {
     };
     use dep::authwit::auth::assert_current_call_valid_authwit;
     use crate::my_note::{MyNote, MyNoteMethods, MY_NOTE_LEN};
-    
+
     struct Storage {
         my_set: Set<MyNote, MY_NOTE_LEN>,
     }
@@ -40,12 +40,12 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
             assert_current_call_valid_authwit(&mut context, from);
         } 
  
-        let escrows = storage.my_set;
+        let stored_set = storage.my_set;
 
         let options = NoteGetterOptions::new().select(1, from.address).set_limit(1);
-        let note = escrows.get_notes(options)[0].unwrap_unchecked();
+        let note = stored_set.get_notes(options)[0].unwrap_unchecked();
 
-        escrows.remove(note); // ... commenting out this .remove()
+        stored_set.remove(note); // ... commenting out this .remove()
 
         1
     }
