@@ -39,17 +39,15 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
 */
 
     #[aztec(private)]
-    fn settle_escrow(from: AztecAddress, recipient: AztecAddress, amount: Field, randomness: Field, nonce: Field) -> Field {
+    fn remove_note(from: AztecAddress, nonce: Field) -> Field {
 
         if (from.address != context.msg_sender()) { // commenting out this if fix compilation, same as...
             assert_current_call_valid_authwit(&mut context, from);
-        } else {
-            assert(nonce == 0);
-        }
+        } 
  
         let escrows = storage.my_set;
 
-        let options = NoteGetterOptions::new().select(0, amount).select(1, from.address).set_limit(1);
+        let options = NoteGetterOptions::new().select(1, from.address).set_limit(1);
         let note = escrows.get_notes(options)[0].unwrap_unchecked();
 
         escrows.remove(note); // ... commenting out this .remove()
@@ -64,14 +62,12 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
 
 
     #[aztec(private)]
-    fn something_escrow(
-        from: AztecAddress,
+    fn create_note(
         from: AztecAddress,
         amount: Field,
         participants: [Field; 4],
         nonce: Field,
     ) -> Field {
-        // create the EscrowNote
         let mut escrow_note = MyNote::new(amount, from, participants);
         storage.my_set.insert(&mut escrow_note, true);
 
