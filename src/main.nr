@@ -62,10 +62,17 @@ contract Test {
     }
 
 
+// This fails to compile:
+/**
+The application panicked (crashed).
+Message:  internal error: entered unreachable code: Cannot flatten a dynamic array
+Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:1137
+*/
+
     #[aztec(private)]
     fn settle_escrow(from: AztecAddress, recipient: AztecAddress, amount: Field, randomness: Field, nonce: Field) -> Field {
 
-        if (from.address != context.msg_sender()) {
+        if (from.address != context.msg_sender()) { // commenting out this if fix compilation, same as...
             assert_current_call_valid_authwit(&mut context, from);
         } else {
             assert(nonce == 0);
@@ -73,12 +80,10 @@ contract Test {
  
         let escrows = storage.my_set;
 
-        // Filter the note
         let options = NoteGetterOptions::new().select(0, amount).select(1, from.address).set_limit(1);
         let note = escrows.get_notes(options)[0].unwrap_unchecked();
 
-        // Nullify the note
-        escrows.remove(note);
+        escrows.remove(note); // ... commenting out this remove
 
         1
     }
