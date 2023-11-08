@@ -49,4 +49,10 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
 
         1
     }
+
+    unconstrained fn compute_note_hash_and_nullifier(contract_address: Field, nonce: Field, storage_slot: Field, preimage: [Field; MY_NOTE_LEN]) -> [Field; 4] {
+        let _ = storage;
+        let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
+        note_utils::compute_note_hash_and_nullifier(MyNoteMethods, note_header, preimage)
+    }
 }

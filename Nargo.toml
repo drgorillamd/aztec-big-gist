@@ -2,7 +2,7 @@
 name = "aztec_big_gist"
 type = "contract"
 authors = ["drgorillamd"]
-compiler_version = "0.17.0"
+compiler_version = ">0.18.0"
 
 [dependencies]
 aztec = { git="https://github.com/AztecProtocol/aztec-packages/", tag="aztec-packages-v0.13.1", directory="yarn-project/aztec-nr/aztec" }

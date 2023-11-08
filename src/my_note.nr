@@ -43,7 +43,7 @@ impl MyNote {
     }
 
     pub fn compute_note_hash(self) -> Field {
-        dep::std::hash::pedersen(serialize(self))[0]
+        dep::std::hash::pedersen_hash(serialize(self))
     }
 
     fn compute_nullifier(self) -> Field {
