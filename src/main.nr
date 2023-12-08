@@ -43,9 +43,12 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
         let stored_set = storage.my_set;
 
         let options = NoteGetterOptions::new().select(1, from.address).set_limit(1);
-        let note = stored_set.get_notes(options)[0].unwrap_unchecked();
-
-        stored_set.remove(note); // ... commenting out this .remove()
+        let notes = stored_set.get_notes(options);
+        
+        if notes[0].is_some() {
+            let note = notes[0].unwrap_unchecked();
+            stored_set.remove(note); // ... commenting out this .remove()
+        }
 
         1
     }
