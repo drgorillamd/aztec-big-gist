@@ -36,19 +36,15 @@ Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:113
     #[aztec(private)]
     fn remove_note(from: AztecAddress) -> Field {
 
-        if (from.address != context.msg_sender()) { // commenting out this if fix compilation, same as...
+        if (from.address != context.msg_sender()) { // commenting out this fixes compilation, same as...
             assert_current_call_valid_authwit(&mut context, from);
         } 
  
         let stored_set = storage.my_set;
 
         let options = NoteGetterOptions::new().select(1, from.address).set_limit(1);
-        let notes = stored_set.get_notes(options);
-        
-        if notes[0].is_some() {
-            let note = notes[0].unwrap_unchecked();
-            stored_set.remove(note); // ... commenting out this .remove()
-        }
+        let note = stored_set.get_notes(options)[0].unwrap_unchecked();
+        stored_set.remove(note); // ... commenting out this .remove(), or see https://discord.com/channels/1144692727120937080/1169678384993931334/1170093427107573861
 
         1
     }
