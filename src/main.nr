@@ -9,22 +9,25 @@ contract Test {
         },
         context::{PrivateContext, PublicContext, Context},
         state_vars::set::Set,
-        types::address::{AztecAddress},
+        protocol_types::address::{AztecAddress},
     };
     use dep::authwit::auth::assert_current_call_valid_authwit;
-    use crate::my_note::{MyNote, MyNoteMethods, MY_NOTE_LEN};
+    use crate::my_note::{MyNote, MY_NOTE_LEN};
 
     struct Storage {
-        my_set: Set<MyNote, MY_NOTE_LEN>,
+        my_set: Set<MyNote>,
     }
 
     impl Storage {
         fn init(context: Context) -> Self {
             Storage {
-                my_set: Set::new(context, 1, MyNoteMethods),
+                my_set: Set::new(context, 1),
             }
         }
     }
+
+    #[aztec(private)]
+    fn constructor() {}
 
 // This fails to compile:
 /**
@@ -33,25 +36,24 @@ Message:  internal error: entered unreachable code: Cannot flatten a dynamic arr
 Location: compiler/noirc_evaluator/src/ssa/acir_gen/acir_ir/acir_variable.rs:1137
 */
 
-    #[aztec(private)]
-    fn remove_note(from: AztecAddress) -> Field {
+    // #[aztec(private)]
+    // fn remove_note(from: AztecAddress) -> Field {
 
-        if (from.address != context.msg_sender()) { // commenting out this fixes compilation, same as...
-            assert_current_call_valid_authwit(&mut context, from);
-        } 
+    //     if (from != context.msg_sender()) { // commenting out this fixes compilation, same as...
+    //         assert_current_call_valid_authwit(&mut context, from);
+    //     } 
  
-        let stored_set = storage.my_set;
+    //     let stored_set = storage.my_set;
 
-        let options = NoteGetterOptions::new().select(1, from.address).set_limit(1);
-        let note = stored_set.get_notes(options)[0].unwrap_unchecked();
-        stored_set.remove(note); // ... commenting out this .remove(), or see https://discord.com/channels/1144692727120937080/1169678384993931334/1170093427107573861
+    //     let options = NoteGetterOptions::new().select(1, from.to_field()).set_limit(1);
+    //     let note = stored_set.get_notes(options)[0].unwrap_unchecked();
+    //     stored_set.remove(note); // ... commenting out this .remove(), or see https://discord.com/channels/1144692727120937080/1169678384993931334/1170093427107573861
 
-        1
-    }
+    //     1
+    // }
 
-    unconstrained fn compute_note_hash_and_nullifier(contract_address: Field, nonce: Field, storage_slot: Field, preimage: [Field; MY_NOTE_LEN]) -> [Field; 4] {
-        let _ = storage;
+    unconstrained fn compute_note_hash_and_nullifier(contract_address: AztecAddress, nonce: Field, storage_slot: Field, note_type_id: Field, preimage: [Field; MY_NOTE_LEN]) -> pub [Field; 4] {
         let note_header = NoteHeader::new(contract_address, nonce, storage_slot);
-        note_utils::compute_note_hash_and_nullifier(MyNoteMethods, note_header, preimage)
+        note_utils::compute_note_hash_and_nullifier(MyNote::deserialize_content, note_header, preimage)
     }
 }
