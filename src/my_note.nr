@@ -77,4 +77,8 @@ impl NoteInterface<MY_NOTE_LEN> for MyNote {
 
     pub fn broadcast(self, context: &mut PrivateContext, slot: Field) {
     }
+
+    fn get_note_type_id() -> Field {
+        0
+    }
 }
